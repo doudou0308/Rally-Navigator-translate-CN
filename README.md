@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> **English** | [**简体中文**](#rally-navigator-简体中文汉化包)
+> **English** | **简体中文**
 
 ---
 
