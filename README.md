@@ -6,9 +6,9 @@
 
 ---
 
-**Rally Navigator** is a professional rally roadbook creation software (Windows/macOS). This project provides a **Simplified Chinese translation** covering **99%+** of the application's UI text.
+**Rally Navigator** is a professional rally roadbook creation software (Windows/macOS). This project provides a **Simplified Chinese translation** with **1,358 of 1,404 entries translated (96.7%)** in the documented sample.
 
-**Rally Navigator** 是一款专业的拉力赛路书制作软件（Windows/macOS）。本项目为其提供了**简体中文翻译**，覆盖了软件的 **99%+** 界面文本。
+**Rally Navigator** 是一款专业的拉力赛路书制作软件（Windows/macOS）。本项目为其提供了**简体中文翻译**，记录的样本中已翻译 **1,358 / 1,404 条（96.7%）**。
 
 ---
 
@@ -41,9 +41,12 @@
 ### 第一步：生成中文翻译 / Step 1: Generate translation
 
 ```bash
-cd "Rally Navigator translate CN"
-python translate.py
+cd Rally-Navigator-translate-CN
+# 指定你实际安装目录下的英文语言文件 / Use your actual installation path
+python translate.py "C:\Program Files\Rally Navigator\resources\locales\en\translation.json"
 ```
+
+请将路径换成实际位置；不指定输入路径时，脚本使用作者环境中的默认路径。/ Replace the input with your actual path; without an argument the script uses an environment-specific default.
 
 默认输出 / Default output: `resources/locales/zh-Hans-CN/translation.json`
 
@@ -152,7 +155,7 @@ zh-Hans-CN/translation.json  ──▶  Copy to lt/  ──▶  Select "Lietuvi�
 A: 软件更新会覆盖 `resources/` 目录，重新执行部署步骤即可。App updates overwrite `resources/`. Just re-deploy.
 
 **Q: 如何补充未翻译的条目？/ How to add missing translations?**
-A: 运行 `python translate.py` 查看列表，将条目加入 `src/trans_map.py` 后重新生成。Run `python translate.py` to see the untranslated list, add entries to `src/trans_map.py`, then regenerate.
+A: 使用上面的输入路径运行 `python translate.py "英文语言文件路径"` 查看列表，将条目加入 `src/trans_map.py` 后重新生成。Run `python translate.py "path/to/en/translation.json"` to see the untranslated list, add entries to `src/trans_map.py`, then regenerate.
 
 **Q: 为什么有些条目保留了英文？/ Why are some entries kept in English?**
 A: 品牌名（Rally Navigator, RallySafe, TerraPirata 等）、文件格式（PDF, CSV, GPX, KML 等）和数字条目保持原文。Brand names, file format names, and numeric entries remain in English.
