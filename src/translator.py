@@ -28,17 +28,26 @@ def translate_json(input_path, output_dir):
     with open(input_path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
+    if not isinstance(data, list):
+        raise ValueError("翻译文件顶层必须是数组")
+
     # 执行翻译
     output = []
     untranslated = []
 
-    for item in data:
+    translated_count = 0
+    for index, item in enumerate(data, start=1):
+        if not isinstance(item, dict) or "id" not in item or not isinstance(item.get("content"), str):
+            raise ValueError(f"第 {index} 条记录必须包含 id 和字符串 content")
         content = item["content"]
         if content in trans_map:
             translated = trans_map[content]
         else:
             translated = content  # 保留原文
             untranslated.append(item)
+
+        if translated != content:
+            translated_count += 1
 
         output.append({
             "id": item["id"],
@@ -53,10 +62,9 @@ def translate_json(input_path, output_dir):
 
     return {
         "total": len(data),
-        "translated": sum(1 for o in output if o["content"] !=
-                          next((d["content"] for d in data
-                                if d["id"] == o["id"]), "")),
-        "kept": len(untranslated),
+        "translated": translated_count,
+        "kept": len(data) - translated_count,
         "untranslated": untranslated,
         "output": output_path,
     }
+
