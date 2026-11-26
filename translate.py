@@ -2,16 +2,15 @@
 """Rally Navigator 中文汉化工具
 
 用法:
-  python translate.py <en_json路径> [输出目录]
+  python translate.py <en_json路径> [-o 输出目录]
 
 示例:
   python translate.py "e:\Rally Navigator\resources\locales\en\translation.json"
-  python translate.py "en.json" "output"
+  python translate.py "en.json" -o "output"
 """
 
 import sys
 import os
-import json
 import argparse
 from src.translator import translate_json
 
@@ -34,7 +33,7 @@ def main():
     )
     parser.add_argument(
         "-o", "--output",
-        default=r"resources\locales\zh-Hans-CN",
+        default=os.path.join("resources", "locales", "zh-Hans-CN"),
         help="输出目录 (default: resources/locales/zh-Hans-CN)"
     )
     parser.add_argument(
@@ -46,13 +45,11 @@ def main():
 
     args = parser.parse_args()
 
-    # 检查输入文件
-    if not os.path.exists(args.input):
-        print(f"[错误] 找不到输入文件: {args.input}")
-        sys.exit(1)
-
-    # 执行翻译
-    result = translate_json(args.input, args.output)
+    try:
+        result = translate_json(args.input, args.output)
+    except (OSError, ValueError) as error:
+        print(f"[错误] 无法生成翻译：{error}", file=sys.stderr)
+        return 1
 
     # 输出统计
     if args.stats:
@@ -63,12 +60,12 @@ def main():
         print(f"  汉化完成！")
         print(f"{'='*40}")
         print(f"  总条目数:     {total}")
-        print(f"  已翻译:       {translated:>4} ({translated*100//total}%)")
-        print(f"  保留原文:     {kept:>4} ({kept*100//total}%)")
+        print(f"  已翻译:       {translated:>4} ({translated * 100 // total if total else 0}%)")
+        print(f"  保留原文:     {kept:>4} ({kept * 100 // total if total else 0}%)")
         print(f"  输出文件:     {result['output']}")
         print(f"{'='*40}")
 
-        if kept > 0 and result.get("untranslated"):
+        if result["untranslated"]:
             print(f"\n  未翻译条目 (前20条):")
             for item in result["untranslated"][:20]:
                 print(f"    - {item['id']}")
@@ -76,7 +73,9 @@ def main():
                 print(f"    ... 还有 {len(result['untranslated'])-20} 条")
 
     print("\n✅ 完成！")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
+
