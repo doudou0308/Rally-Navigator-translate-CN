@@ -122,6 +122,18 @@ python translate.py
 
 ---
 
+## 测试 / Tests
+
+在仓库根目录运行 / Run from the repository root:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+测试覆盖额外字段保留、翻译统计及写入失败时保留旧文件。生成文件时先写入同目录临时文件，成功后再替换目标文件。/ Tests cover metadata preservation, translation statistics, and preservation of existing output on write failure. Output is written to a temporary file in the same directory before replacement.
+
+---
+
 ## 还原方法 / How to Restore
 
 ```powershell
