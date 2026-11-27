@@ -5,6 +5,7 @@
 
 import os
 import json
+import tempfile
 from src.trans_map import trans_map
 
 
@@ -49,16 +50,28 @@ def translate_json(input_path, output_dir):
         if translated != content:
             translated_count += 1
 
-        output.append({
-            "id": item["id"],
-            "content": translated
-        })
+        # Preserve metadata that newer application versions may include.
+        record = dict(item)
+        record["content"] = translated
+        output.append(record)
 
     # 写入输出
     os.makedirs(output_dir, exist_ok=True)
     output_path = os.path.join(output_dir, "translation.json")
-    with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(output, f, ensure_ascii=False, indent=2)
+    # Write to a temporary file first so a failed export cannot truncate
+    # an existing translation file.
+    temporary_path = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", dir=output_dir,
+            prefix=".translation-", suffix=".tmp", delete=False
+        ) as f:
+            temporary_path = f.name
+            json.dump(output, f, ensure_ascii=False, indent=2)
+        os.replace(temporary_path, output_path)
+    finally:
+        if temporary_path is not None and os.path.exists(temporary_path):
+            os.unlink(temporary_path)
 
     return {
         "total": len(data),
